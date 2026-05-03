@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebGIS Tangerang Selatan</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+    <style>
+        #map {
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+// Inisialisasi peta (koordinat Tangsel)
+var map = L.map('map').setView([-6.3, 106.7], 12);
+
+// Basemap OpenStreetMap
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap'
+}).addTo(map);
+
+// Load GeoJSON
+fetch('data/tangsel.geojson')
+.then(response => response.json())
+.then(data => {
+    L.geoJSON(data, {
+        onEachFeature: function (feature, layer) {
+            let popupContent = "Data tidak tersedia";
+
+            if (feature.properties) {
+                popupContent = "Nama: " + (feature.properties.name || "Tidak ada");
+            }
+
+            layer.bindPopup(popupContent);
+        }
+    }).addTo(map);
+});
+</script>
+
+</body>
+</html>
